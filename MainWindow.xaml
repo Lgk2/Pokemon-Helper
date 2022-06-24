@@ -1,0 +1,198 @@
+﻿<Window x:Class="Pokemon_Helper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:pokemon_helper="clr-namespace:Pokemon_Helper" d:DataContext="{d:DesignInstance Type=pokemon_helper:PokemonView}"
+        mc:Ignorable="d"
+        Closing="Window_Closing"
+        SizeChanged="Window_SizeChanged"
+        Title="Pokemon Helper" MinHeight="600" MinWidth="990" Width="1540">
+
+    <Grid>
+        <Grid.Resources>
+            <SolidColorBrush x:Key="ReadOnlyTextBrush" Color="#e657a1" />
+
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="2" />
+            </Style>
+
+            <Style TargetType="Bold">
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="883*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Vertical">
+            <StackPanel Grid.RowSpan="2">
+                <Label Name="GymLabelStr" Foreground="{StaticResource ReadOnlyTextBrush}">Before Gym</Label>
+                <TextBox Name="beforeGymCtrl" Text="5" TextChanged="BeforeGymCtrl_TextChanged" />
+
+                <Label Foreground="{StaticResource ReadOnlyTextBrush}">Attack Type</Label>
+                <ComboBox Name="AttackTypeBox" SelectedIndex="0" Grid.Column="1" SelectionChanged="AttackTypeBox_SelectionChanged">
+                    <ComboBoxItem>Either</ComboBoxItem>
+                    <ComboBoxItem>Attack</ComboBoxItem>
+                    <ComboBoxItem>Special Attack</ComboBoxItem>
+                    <ComboBoxItem>Hybrid</ComboBoxItem>
+                </ComboBox>
+
+                <Label Foreground="{StaticResource ReadOnlyTextBrush}">Min Total Base Stats</Label>
+                <TextBox Name="MinimumBaseStats" Text="500" TextChanged="BeforeGymCtrl_TextChanged" />
+
+                <Label Foreground="{StaticResource ReadOnlyTextBrush}">Search</Label>
+                <TextBox Name="SearchBox" TextChanged="SearchBox_TextChanged" />
+
+                <ComboBox Name="TypeCount" SelectedIndex="0" Grid.Column="1" SelectionChanged="DualTypesOnly_Click">
+                    <ComboBoxItem>Both Single and Double Type</ComboBoxItem>
+                    <ComboBoxItem>Single</ComboBoxItem>
+                    <ComboBoxItem>Double</ComboBoxItem>
+                </ComboBox>
+                <CheckBox Name="HighestEvolStats" Foreground="{StaticResource ReadOnlyTextBrush}" Click="HighestEvolStats_Click">Highest Evolution Stats</CheckBox>
+                <CheckBox Name="ShowHidden" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Hidden</CheckBox>
+                <CheckBox Name="ShowPassword" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Password</CheckBox>
+                <CheckBox Name="ShowEgg" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Hidden</CheckBox>
+                <CheckBox Name="ShowStarters" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Starters</CheckBox>
+                <CheckBox Name="OnlyCurrentGym" Foreground="{StaticResource ReadOnlyTextBrush}" Click="OnlyCurrentGym_Click">Only Current Gym</CheckBox>
+                
+                <Button Name="Reload" Foreground="{StaticResource ReadOnlyTextBrush}" Click="Reload_Click">Reload Resources</Button>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label FontSize="16" Foreground="{StaticResource ReadOnlyTextBrush}">Matching Pokemon:</Label>
+                    <Label FontSize="16" Name="MatchingPkmnNbr" MinWidth="50" IsEnabled="False" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel>
+                <Label HorizontalContentAlignment="Center" Foreground="{StaticResource ReadOnlyTextBrush}">Acceptable Types</Label>
+                <WrapPanel
+                    Orientation="Horizontal" ItemWidth="100">
+                    <Button PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Normal
+                        </Bold>
+                    </Button>
+                    <Button Foreground="Orange" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Fire
+                        </Bold>
+                    </Button>
+                    <Button Foreground="Blue" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Water
+                        </Bold>
+                    </Button>
+                    <Button Foreground="Yellow" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Electric
+                        </Bold>
+                    </Button>
+                    <Button Foreground="Green" Grid.Column="4" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Grass
+                        </Bold>
+                    </Button>
+                    <Button Foreground="LightBlue" Grid.Row="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Ice
+                        </Bold>
+                    </Button>
+                    <Button Foreground="Red" Grid.Row="1" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Fighting
+                        </Bold>
+                    </Button>
+                    <Button Foreground="Purple" Grid.Row="1" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Poison
+                        </Bold>
+                    </Button>
+                    <Button Foreground="SaddleBrown" Grid.Row="1" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Ground
+                        </Bold>
+                    </Button>
+                    <Button Foreground="DeepSkyBlue" Grid.Row="1" Grid.Column="4" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Flying
+                        </Bold>
+                    </Button>
+                    <Button Foreground="MediumPurple" Grid.Row="2" Grid.Column="0" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Psychic
+                        </Bold>
+                    </Button>
+                    <Button Foreground="LightGreen" Grid.Row="2" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Bug
+                        </Bold>
+                    </Button>
+                    <Button Foreground="Brown" Grid.Row="2" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Rock
+                        </Bold>
+                    </Button>
+                    <Button Foreground="DarkGray" Grid.Row="2" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Ghost
+                        </Bold>
+                    </Button>
+                    <Button Foreground="DarkBlue" Grid.Row="2" Grid.Column="4" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Dragon
+                        </Bold>
+                    </Button>
+                    <Button Foreground="Black" Grid.Row="3" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Dark
+                        </Bold>
+                    </Button>
+                    <Button Foreground="Gray" Grid.Row="3" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Steel
+                        </Bold>
+                    </Button>
+                    <Button Foreground="LightPink" Grid.Row="3" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Bold>
+                            Fairy
+                        </Bold>
+                    </Button>
+                </WrapPanel>
+            </StackPanel>
+        </StackPanel>
+
+
+        <Grid Grid.Column="1" Grid.RowSpan="2" Margin="4,0,0,0">
+            <DataGrid Name="PokemonListView" ItemsSource="{Binding PokemonList}" AutoGenerateColumns="False" FontSize="24" MouseDoubleClick="PokemonListView_MouseDoubleClick">
+                <DataGrid.BindingGroup>
+                    <BindingGroup/>
+                </DataGrid.BindingGroup>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="140" Header="Name" Binding="{Binding Path=PokemonExcel.Name}" />
+                    <DataGridTextColumn Width="170" Header="Types" Binding="{Binding Path=PokemonStats.TypesString}" />
+                    <DataGridTextColumn Width="35" Header="G" Binding="{Binding Path=BeforeGym}" />
+
+                    <DataGridTextColumn Width="240" Header="Location" Binding="{Binding Path=PokemonExcel.Location}" />
+                    <DataGridTextColumn x:Name="NoteColumn" Width="390" Header="Notes" Binding="{Binding Path=PokemonExcel.Notes}" />
+                    <DataGridTextColumn x:Name="TotalColumn" Width="59" Header="Total" Binding="{Binding Path=PokemonStats.TotalBaseStats}" />
+
+                    <DataGridTextColumn Width="50" Header="HP" Binding="{Binding Path=PokemonStats.Health}" />
+                    <DataGridTextColumn Width="50" Header="Atk" Binding="{Binding Path=PokemonStats.Attack}" />
+                    <DataGridTextColumn Width="50" Header="Def" Binding="{Binding Path=PokemonStats.Defense}" />
+                    <DataGridTextColumn Width="50" Header="SpA" Binding="{Binding Path=PokemonStats.SpecialAttack}" />
+                    <DataGridTextColumn Width="50" Header="SpD" Binding="{Binding Path=PokemonStats.SpecialDefense}" />
+                    <DataGridTextColumn Width="50" Header="Spe" Binding="{Binding Path=PokemonStats.Speed}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Window>
