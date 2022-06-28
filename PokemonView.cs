@@ -6,28 +6,28 @@ namespace Pokemon_Helper
 {
     public class PokemonView : INotifyPropertyChanged
     {
-        private List<Pokemon>? pokemonList;
-        private List<Trainer>? trainerList;
+        private List<Pokemon>? visiblePokemons;
+        private List<Trainer>? visibleTrainers;
         private Trainer? selectedTrainer;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public List<Pokemon>? PokemonList
         {
-            get { return pokemonList; }
+            get { return visiblePokemons; }
             set
             {
-                pokemonList = value;
+                visiblePokemons = value;
                 OnPropertyChanged(nameof(PokemonList));
             }
         }
 
         public List<Trainer>? TrainerList
         {
-            get { return trainerList; }
+            get { return visibleTrainers; }
             set
             {
-                trainerList = value;
+                visibleTrainers = value;
                 OnPropertyChanged(nameof(TrainerList));
             }
         }

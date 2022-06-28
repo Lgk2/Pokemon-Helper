@@ -50,7 +50,7 @@
                 <TextBox Name="MinimumBaseStats" Text="500" TextChanged="UpdateMatchingPokemon_Click" />
 
                 <Label Foreground="{StaticResource ReadOnlyTextBrush}">Search</Label>
-                <TextBox Name="SearchBox" TextChanged="UpdateMatchingPokemon_Click" />
+                <TextBox Name="SearchBox" TextChanged="SearchBox_TextChanged" />
 
                 <ComboBox Name="TypeCount" SelectedIndex="0" Grid.Column="1" SelectionChanged="UpdateMatchingPokemon_Click">
                     <ComboBoxItem>Both Single and Double Type</ComboBoxItem>

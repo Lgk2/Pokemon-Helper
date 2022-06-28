@@ -18,6 +18,7 @@ namespace Pokemon_Helper
     public partial class MainWindow : Window
     {
         private List<Pokemon> Pokemons = new();
+        private List<Trainer> Trainers = new();
 
         private readonly List<string> includedTypes = new();
         private readonly List<string> excludedTypes = new();
@@ -35,7 +36,7 @@ namespace Pokemon_Helper
         private readonly SolidColorBrush FourXResistant = new(Color.FromRgb(0, 0, 192)); //Only takes half damage
         private readonly SolidColorBrush Immune = new(Color.FromRgb(255, 255, 255));
 
-        private string oldSearchBoxValue;
+        private string oldSearchBoxValue = "";
 
         public MainWindow()
         {
@@ -97,7 +98,8 @@ namespace Pokemon_Helper
         private void ReadTrainers()
         {
             ResourceReader resourceReader = new();
-            pokemonView.TrainerList = resourceReader.ReadTrainers(Pokemons);
+            Trainers = resourceReader.ReadTrainers(Pokemons);
+            UpdateMatchingTrainers();
         }
 
         private static DamageType GetPokemonType(Pokemon poke)
@@ -197,6 +199,17 @@ namespace Pokemon_Helper
 
             MatchingPkmnNbr.Content = matchingPokemon.Count;
             pokemonView.PokemonList = matchingPokemon;
+        }
+
+        private void UpdateMatchingTrainers()
+        {
+            IEnumerable<Trainer> matchingTrainers = Trainers;
+
+            string searchTxt = SearchBox.Text.ToLower();
+            if (!string.IsNullOrEmpty(searchTxt))
+                matchingTrainers = matchingTrainers.Where(trainer => !string.IsNullOrEmpty(trainer.Name) && trainer.Name.ToLower().Contains(searchTxt));
+
+            pokemonView.TrainerList = matchingTrainers.ToList();
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -335,12 +348,7 @@ namespace Pokemon_Helper
         private void SearchForTrainers_Click(object sender, RoutedEventArgs e)
         {
             //TODO handle searching for trainer name
-            if (!string.IsNullOrEmpty(oldSearchBoxValue))
-            {
-                string temp = SearchBox.Text;
-                SearchBox.Text = oldSearchBoxValue;
-                oldSearchBoxValue = temp;
-            }
+            (oldSearchBoxValue, SearchBox.Text) = (SearchBox.Text, oldSearchBoxValue);
 
             if (SearchForTrainers.IsChecked == true)
             {
@@ -457,6 +465,14 @@ namespace Pokemon_Helper
                 MessageBox.Show("Error finding " + selectedPokemon.PokemonExcel.Name);
             else
                 MessageBox.Show("Error finding " + selectedPokemon.ToString());
+        }
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (SearchForTrainers.IsChecked == true)
+                UpdateMatchingTrainers();
+            else
+                UpdateMatchingPokemon();
         }
     }
 }
