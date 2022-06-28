@@ -7,8 +7,10 @@ namespace Pokemon_Helper
     public class PokemonStats
     {
         public string? Name { get; set; }
+        public string? InternalName { get; set; }
 
-        public List<PokemonTypes> Types { get; set; } = new();
+        public List<PokemonType> Types { get; set; } = new();
+        public List<Move> Moves { get; set; } = new();
         public List<string> Evolutions { get; set; } = new();
 
         public int TotalBaseStats { get; set; }
@@ -20,13 +22,14 @@ namespace Pokemon_Helper
         public int SpecialAttack { get; set; }
         public int SpecialDefense { get; set; }
         public int Speed { get; set; }
+        public string? Image { get; set; }
 
 
         public int[] StatNbrs { get; set; } = new int[] { 0, 0, 0, 0, 0 };
 
         public string TypesString { get; set; } = "";
 
-        public void AddType(PokemonTypes type)
+        public void AddType(PokemonType type)
         {
             Types.Add(type);
 
@@ -57,7 +60,15 @@ namespace Pokemon_Helper
 
         public int[] MaxEvolutionStatNbrs(List<Pokemon> pokemons)
         {
-            return Evolutions.Count != 0 ? pokemons.First(poke => poke.PokemonExcel.Name == Evolutions[0]).PokemonStats.MaxEvolutionStatNbrs(pokemons) : StatNbrs;
+            if (Evolutions.Count != 0)
+            {
+                Pokemon? pokemon = pokemons.First(poke => poke.PokemonExcel != null && poke.PokemonExcel.Name == Evolutions[0]);
+
+                if (pokemon != null && pokemon.PokemonStats != null)
+                    return pokemon.PokemonStats.MaxEvolutionStatNbrs(pokemons);
+            }
+
+            return StatNbrs;
         }
     }
 }

@@ -36,10 +36,10 @@
         <StackPanel Orientation="Vertical">
             <StackPanel Grid.RowSpan="2">
                 <Label Name="GymLabelStr" Foreground="{StaticResource ReadOnlyTextBrush}">Before Gym</Label>
-                <TextBox Name="beforeGymCtrl" Text="5" TextChanged="BeforeGymCtrl_TextChanged" />
+                <TextBox Name="beforeGymCtrl" Text="5" TextChanged="UpdateMatchingPokemon_Click" />
 
                 <Label Foreground="{StaticResource ReadOnlyTextBrush}">Attack Type</Label>
-                <ComboBox Name="AttackTypeBox" SelectedIndex="0" Grid.Column="1" SelectionChanged="AttackTypeBox_SelectionChanged">
+                <ComboBox Name="AttackTypeBox" SelectedIndex="0" Grid.Column="1" SelectionChanged="UpdateMatchingPokemon_Click">
                     <ComboBoxItem>Either</ComboBoxItem>
                     <ComboBoxItem>Attack</ComboBoxItem>
                     <ComboBoxItem>Special Attack</ComboBoxItem>
@@ -47,12 +47,12 @@
                 </ComboBox>
 
                 <Label Foreground="{StaticResource ReadOnlyTextBrush}">Min Total Base Stats</Label>
-                <TextBox Name="MinimumBaseStats" Text="500" TextChanged="BeforeGymCtrl_TextChanged" />
+                <TextBox Name="MinimumBaseStats" Text="500" TextChanged="UpdateMatchingPokemon_Click" />
 
                 <Label Foreground="{StaticResource ReadOnlyTextBrush}">Search</Label>
-                <TextBox Name="SearchBox" TextChanged="SearchBox_TextChanged" />
+                <TextBox Name="SearchBox" TextChanged="UpdateMatchingPokemon_Click" />
 
-                <ComboBox Name="TypeCount" SelectedIndex="0" Grid.Column="1" SelectionChanged="DualTypesOnly_Click">
+                <ComboBox Name="TypeCount" SelectedIndex="0" Grid.Column="1" SelectionChanged="UpdateMatchingPokemon_Click">
                     <ComboBoxItem>Both Single and Double Type</ComboBoxItem>
                     <ComboBoxItem>Single</ComboBoxItem>
                     <ComboBoxItem>Double</ComboBoxItem>
@@ -63,6 +63,7 @@
                 <CheckBox Name="ShowEgg" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Hidden</CheckBox>
                 <CheckBox Name="ShowStarters" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Starters</CheckBox>
                 <CheckBox Name="OnlyCurrentGym" Foreground="{StaticResource ReadOnlyTextBrush}" Click="OnlyCurrentGym_Click">Only Current Gym</CheckBox>
+                <CheckBox Name="SearchForTrainers" Foreground="{StaticResource ReadOnlyTextBrush}" Click="SearchForTrainers_Click">Search For Trainers</CheckBox>
                 
                 <Button Name="Reload" Foreground="{StaticResource ReadOnlyTextBrush}" Click="Reload_Click">Reload Resources</Button>
 
@@ -74,94 +75,93 @@
 
             <StackPanel>
                 <Label HorizontalContentAlignment="Center" Foreground="{StaticResource ReadOnlyTextBrush}">Acceptable Types</Label>
-                <WrapPanel
-                    Orientation="Horizontal" ItemWidth="100">
-                    <Button PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                <WrapPanel Name="TypeBtnPanel" Orientation="Horizontal" ItemWidth="100">
+                    <Button Name="NormalTypeBtn" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Normal
                         </Bold>
                     </Button>
-                    <Button Foreground="Orange" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="FireTypeBtn" Foreground="Orange" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Fire
                         </Bold>
                     </Button>
-                    <Button Foreground="Blue" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="WaterTypeBtn" Foreground="Blue" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Water
                         </Bold>
                     </Button>
-                    <Button Foreground="Yellow" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="ElectricTypeBtn" Foreground="Yellow" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Electric
                         </Bold>
                     </Button>
-                    <Button Foreground="Green" Grid.Column="4" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="GrassTypeBtn" Foreground="Green" Grid.Column="4" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Grass
                         </Bold>
                     </Button>
-                    <Button Foreground="LightBlue" Grid.Row="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="IceTypeBtn" Foreground="LightBlue" Grid.Row="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Ice
                         </Bold>
                     </Button>
-                    <Button Foreground="Red" Grid.Row="1" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="FightingTypeBtn" Foreground="Red" Grid.Row="1" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Fighting
                         </Bold>
                     </Button>
-                    <Button Foreground="Purple" Grid.Row="1" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="PoisonTypeBtn" Foreground="Purple" Grid.Row="1" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Poison
                         </Bold>
                     </Button>
-                    <Button Foreground="SaddleBrown" Grid.Row="1" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="GroundTypeBtn" Foreground="SaddleBrown" Grid.Row="1" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Ground
                         </Bold>
                     </Button>
-                    <Button Foreground="DeepSkyBlue" Grid.Row="1" Grid.Column="4" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="FlyingTypeBtn" Foreground="DeepSkyBlue" Grid.Row="1" Grid.Column="4" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Flying
                         </Bold>
                     </Button>
-                    <Button Foreground="MediumPurple" Grid.Row="2" Grid.Column="0" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="PsychicTypeBtn" Foreground="MediumPurple" Grid.Row="2" Grid.Column="0" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Psychic
                         </Bold>
                     </Button>
-                    <Button Foreground="LightGreen" Grid.Row="2" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="BugTypeBtn" Foreground="LightGreen" Grid.Row="2" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Bug
                         </Bold>
                     </Button>
-                    <Button Foreground="Brown" Grid.Row="2" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="RockTypeBtn" Foreground="Brown" Grid.Row="2" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Rock
                         </Bold>
                     </Button>
-                    <Button Foreground="DarkGray" Grid.Row="2" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="GhostTypeBtn" Foreground="DarkGray" Grid.Row="2" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Ghost
                         </Bold>
                     </Button>
-                    <Button Foreground="DarkBlue" Grid.Row="2" Grid.Column="4" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="DragonTypeBtn" Foreground="DarkBlue" Grid.Row="2" Grid.Column="4" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Dragon
                         </Bold>
                     </Button>
-                    <Button Foreground="Black" Grid.Row="3" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="DarkTypeBtn" Foreground="Black" Grid.Row="3" Grid.Column="1" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Dark
                         </Bold>
                     </Button>
-                    <Button Foreground="Gray" Grid.Row="3" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="SteelTypeBtn" Foreground="Gray" Grid.Row="3" Grid.Column="2" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Steel
                         </Bold>
                     </Button>
-                    <Button Foreground="LightPink" Grid.Row="3" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                    <Button Name="FairyTypeBtn" Foreground="LightPink" Grid.Row="3" Grid.Column="3" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
                         <Bold>
                             Fairy
                         </Bold>
@@ -170,29 +170,59 @@
             </StackPanel>
         </StackPanel>
 
+        <DataGrid Name="PokemonListView" Grid.Column="1" Grid.RowSpan="2" Margin="4,0,0,0" ItemsSource="{Binding PokemonList}" AutoGenerateColumns="False" FontSize="24" MouseDoubleClick="PokemonListView_MouseDoubleClick" CanUserAddRows="False">
+            <DataGrid.BindingGroup>
+                <BindingGroup/>
+            </DataGrid.BindingGroup>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Img" Width="96" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Path=PokemonStats.Image}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Width="140" Header="Name" Binding="{Binding Path=PokemonExcel.Name}" IsReadOnly="True" />
+                <DataGridTextColumn Width="170" Header="Types" Binding="{Binding Path=PokemonStats.TypesString}" IsReadOnly="True" />
+                <DataGridTextColumn Width="35" Header="G" Binding="{Binding Path=BeforeGym}" IsReadOnly="True" />
 
-        <Grid Grid.Column="1" Grid.RowSpan="2" Margin="4,0,0,0">
-            <DataGrid Name="PokemonListView" ItemsSource="{Binding PokemonList}" AutoGenerateColumns="False" FontSize="24" MouseDoubleClick="PokemonListView_MouseDoubleClick">
-                <DataGrid.BindingGroup>
-                    <BindingGroup/>
-                </DataGrid.BindingGroup>
+                <DataGridTextColumn Width="240" Header="Location" Binding="{Binding Path=PokemonExcel.Location}" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="NoteColumn" Width="390" Header="Notes" Binding="{Binding Path=PokemonExcel.Notes}" IsReadOnly="True" />
+                <DataGridTextColumn x:Name="TotalColumn" Width="59" Header="Total" Binding="{Binding Path=PokemonStats.TotalBaseStats}" IsReadOnly="True" />
+
+                <DataGridTextColumn Width="50" Header="HP" Binding="{Binding Path=PokemonStats.Health}" IsReadOnly="True" />
+                <DataGridTextColumn Width="50" Header="Atk" Binding="{Binding Path=PokemonStats.Attack}" IsReadOnly="True" />
+                <DataGridTextColumn Width="50" Header="Def" Binding="{Binding Path=PokemonStats.Defense}" IsReadOnly="True" />
+                <DataGridTextColumn Width="50" Header="SpA" Binding="{Binding Path=PokemonStats.SpecialAttack}" IsReadOnly="True" />
+                <DataGridTextColumn Width="50" Header="SpD" Binding="{Binding Path=PokemonStats.SpecialDefense}" IsReadOnly="True" />
+                <DataGridTextColumn Width="50" Header="Spe" Binding="{Binding Path=PokemonStats.Speed}" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Name="TrainerListView" Orientation="Horizontal" Visibility="Collapsed" Grid.Column="1" Grid.RowSpan="2" Margin="4,0,0,0">
+            <DataGrid ItemsSource="{Binding TrainerList}" AutoGenerateColumns="False" FontSize="24" SelectionChanged="TrainerGrid_SelectionChanged" CanUserAddRows="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="140" Header="Name" Binding="{Binding Path=PokemonExcel.Name}" />
-                    <DataGridTextColumn Width="170" Header="Types" Binding="{Binding Path=PokemonStats.TypesString}" />
-                    <DataGridTextColumn Width="35" Header="G" Binding="{Binding Path=BeforeGym}" />
-
-                    <DataGridTextColumn Width="240" Header="Location" Binding="{Binding Path=PokemonExcel.Location}" />
-                    <DataGridTextColumn x:Name="NoteColumn" Width="390" Header="Notes" Binding="{Binding Path=PokemonExcel.Notes}" />
-                    <DataGridTextColumn x:Name="TotalColumn" Width="59" Header="Total" Binding="{Binding Path=PokemonStats.TotalBaseStats}" />
-
-                    <DataGridTextColumn Width="50" Header="HP" Binding="{Binding Path=PokemonStats.Health}" />
-                    <DataGridTextColumn Width="50" Header="Atk" Binding="{Binding Path=PokemonStats.Attack}" />
-                    <DataGridTextColumn Width="50" Header="Def" Binding="{Binding Path=PokemonStats.Defense}" />
-                    <DataGridTextColumn Width="50" Header="SpA" Binding="{Binding Path=PokemonStats.SpecialAttack}" />
-                    <DataGridTextColumn Width="50" Header="SpD" Binding="{Binding Path=PokemonStats.SpecialDefense}" />
-                    <DataGridTextColumn Width="50" Header="Spe" Binding="{Binding Path=PokemonStats.Speed}" />
+                    <DataGridTextColumn Width="220" Header="Name" Binding="{Binding Path=Name}" IsReadOnly="True" />
                 </DataGrid.Columns>
             </DataGrid>
-        </Grid>
+
+            <DataGrid ItemsSource="{Binding SelectedTrainer.TrainerPokemons.PokemonList}" AutoGenerateColumns="False" FontSize="24" SelectionChanged="TrainerPokemon_SelectionChanged" CanUserAddRows="False">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Img" Width="96" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Path=PokemonStats.Image}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Width="140" Header="Name" IsReadOnly="True" Binding="{Binding Path=PokemonStats.Name}" />
+                    <DataGridTextColumn Width="100" Header="Lvl" IsReadOnly="True" Binding="{Binding Path=Level}" />
+                    <DataGridTextColumn Width="170" Header="Types" IsReadOnly="True" Binding="{Binding Path=PokemonStats.TypesString}" />
+                    <DataGridTextColumn Width="200" Header="Item" IsReadOnly="True" Binding="{Binding Path=Item}" />
+                    <DataGridTextColumn Width="400" Header="Moves" IsReadOnly="True" Binding="{Binding Path=MovesStr}" />
+                    <DataGridTextColumn Width="105" Header="Nature" IsReadOnly="True" Binding="{Binding Path=Nature}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
     </Grid>
 </Window>

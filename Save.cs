@@ -11,7 +11,7 @@ namespace Pokemon_Helper
         public static readonly string FileExtension = ".json";
         private List<Pokemon> pokemons = new();
 
-        public Save() {}
+        public Save() { }
 
         public Save(List<Pokemon> pokemons)
         {
@@ -27,11 +27,15 @@ namespace Pokemon_Helper
             else
                 foreach (var file in directoryInfo.GetFiles())
                     file.Delete();
-                
+
 
             for (int i = 0; i < pokemons.Count; i++)
             {
                 Pokemon poke = pokemons[i];
+
+                if (poke.PokemonExcel == null)
+                    continue;
+
                 string jsonString = JsonSerializer.Serialize(poke);
                 string fileName = Path.Combine(SaveDir, poke.PokemonExcel.Name);
                 string number = "";
@@ -40,7 +44,7 @@ namespace Pokemon_Helper
                 {
                     int nbr = 2;
 
-                    while(File.Exists(fileName + nbr + FileExtension))
+                    while (File.Exists(fileName + nbr + FileExtension))
                         nbr++;
 
                     number = nbr.ToString();
@@ -67,7 +71,12 @@ namespace Pokemon_Helper
                         pokemons.Add(poke);
 
                         if (poke.PokemonStats != null && poke.PokemonStats.TotalBaseStats == 0)
-                            Console.WriteLine("Error reading stats from pokemon " + poke.PokemonExcel.Name);
+                        {
+                            if (poke.PokemonExcel != null)
+                                Console.WriteLine("Error reading stats from pokemon " + poke.PokemonExcel.Name);
+                            else
+                                Console.WriteLine("Error reading pokemonexcel from pokemon " + poke.PokemonStats.Name);
+                        }
                     }
                 }
             }
