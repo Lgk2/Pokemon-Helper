@@ -119,7 +119,7 @@ namespace Pokemon_Helper
 
                         typeStr = char.ToUpper(typeStr[0]) + typeStr[1..];
 
-                        if (Enum.TryParse(typeStr, out PokemonType type) && !pokemonStats.Types.Contains(type))
+                        if (Enum.TryParse(typeStr, out PokemonType type) && !pokemonStats.PokemonTypes.Contains(type))
                             pokemonStats.AddType(type);
                         else
                             Console.WriteLine("Error reading type from " + line);
@@ -194,6 +194,9 @@ namespace Pokemon_Helper
 
                     string[] pokemonAttributes = line.Split(',');
 
+                    bool hasPhysicalMoves = false;
+                    bool hasSpecialMoves = false;
+
                     for (int i = 0; i < pokemonAttributes.Length; i++)
                     {
                         string attribute = pokemonAttributes[i];
@@ -223,9 +226,15 @@ namespace Pokemon_Helper
                                 newPokemon.Moves = new();
 
                             Move? move = moves.FirstOrDefault(move => move.Name == attribute);
-
                             if (move != null)
+                            {
+                                if (move.MoveType == MoveType.Physical)
+                                    hasPhysicalMoves = true;
+                                else if (move.MoveType == MoveType.Special)
+                                    hasSpecialMoves = true;
+
                                 newPokemon.AddMove(move);
+                            }
                         }
 
                         //TODO finish this
@@ -241,6 +250,17 @@ namespace Pokemon_Helper
                         else if (i == 11)
                         {
                             newPokemon.Nature = (NatureType)Enum.Parse(typeof(NatureType), attribute[0] + attribute[1..].ToLower());
+
+                            if (newPokemon.PokemonStats != null)
+                            {
+                                if (hasPhysicalMoves && hasSpecialMoves)
+                                    newPokemon.PokemonStats.SetPokemonDamageType(DamageType.Hybrid);
+                                else if (hasPhysicalMoves)
+                                    newPokemon.PokemonStats.SetPokemonDamageType(DamageType.Attack);
+                                else
+                                    newPokemon.PokemonStats.SetPokemonDamageType(DamageType.Special);
+                            }
+
                             break;
                         }
                     }

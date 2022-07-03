@@ -9,6 +9,9 @@ namespace Pokemon_Helper
     {
         public static readonly string SaveDir = "Saves";
         public static readonly string FileExtension = ".json";
+
+        public static readonly string ProgressFile = "Settings.txt";
+
         private List<Pokemon> pokemons = new();
 
         public Save() { }
@@ -82,6 +85,16 @@ namespace Pokemon_Helper
             }
 
             return pokemons;
+        }
+
+        public static void SaveSettings(int beforeGym, int attackTypeBoxIndex, int minBaseStats, int selectedTrainerIndex)
+        {
+            File.WriteAllText(ProgressFile, beforeGym + " " + attackTypeBoxIndex + " " + minBaseStats + " " + selectedTrainerIndex);
+        }
+
+        public static string[] LoadSettings()
+        {
+            return !File.Exists(ProgressFile) ? Array.Empty<string>() : File.ReadAllText(ProgressFile).Split(" ");
         }
     }
 }

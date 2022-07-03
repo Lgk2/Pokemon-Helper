@@ -26,7 +26,7 @@ namespace Pokemon_Helper
         private readonly PokemonView pokemonView = new();
 
         private readonly SolidColorBrush defaultBtnColor = new(Color.FromRgb(180, 180, 180));
-        private readonly SolidColorBrush TwoXEffectiveness = new (Color.FromRgb(0, 128, 0)); //This color is also the color chosen when user manually picks
+        private readonly SolidColorBrush TwoXEffectiveness = new(Color.FromRgb(0, 128, 0)); //This color is also the color chosen when user manually picks
 
         private readonly SolidColorBrush TwoXWeak = new(Color.FromRgb(128, 0, 0));
         private readonly SolidColorBrush userExcludedType = new(Color.FromRgb(255, 0, 0));
@@ -54,7 +54,6 @@ namespace Pokemon_Helper
                 {
                     Save save = new();
                     Pokemons = save.LoadPokemons();
-                    UpdateMatchingPokemon();
                 }
                 catch (Exception)
                 {
@@ -64,6 +63,25 @@ namespace Pokemon_Helper
             SetStyles();
 
             ReadTrainers();
+
+            try
+            {
+                string[] settings = Save.LoadSettings();
+
+                if (settings.Length != 0)
+                {
+                    beforeGymCtrl.Text = settings[0];
+                    AttackTypeBox.SelectedIndex = int.Parse(settings[1]);
+                    MinimumBaseStats.Text = settings[2];
+                    TrainerList.SelectedIndex = int.Parse(settings[3]);
+                }
+            }
+            catch 
+            {
+                MessageBox.Show("Failed to load your settings, hopefully it works next time!");
+            }
+
+            UpdateMatchingPokemon();
         }
 
         private void SetStyles()
@@ -91,7 +109,11 @@ namespace Pokemon_Helper
                 PokemonStats? stats = Pokemons[i].PokemonStats;
                 if (stats != null && stats.HighestEvolTBS == 0)
                     stats.SetHighestEvolStats(Pokemons);
+
+                if (stats != null && stats.TotalRelevantBaseStats == 0)
+                    stats.SetRelevantStats();
             }
+
             UpdateMatchingPokemon();
         }
 
@@ -100,23 +122,6 @@ namespace Pokemon_Helper
             ResourceReader resourceReader = new();
             Trainers = resourceReader.ReadTrainers(Pokemons);
             UpdateMatchingTrainers();
-        }
-
-        private static DamageType GetPokemonType(Pokemon poke)
-        {
-            PokemonStats? stats = poke.PokemonStats;
-
-            if (stats == null)
-                return DamageType.Hybrid;
-
-            int[] statNbrs = stats.StatNbrs;
-
-            if (statNbrs[1] > statNbrs[3] + 10)
-                return DamageType.Attack;
-            else if (statNbrs[3] > statNbrs[1] + 10)
-                return DamageType.Special;
-
-            return DamageType.Hybrid;
         }
 
         private void UpdateMatchingPokemon()
@@ -136,12 +141,23 @@ namespace Pokemon_Helper
 
             matchingEnum = matchingEnum.Where(poke => poke.PokemonStats != null && poke.PokemonStats.MaxEvolutionStatNbrs(Pokemons).Sum() >= minBaseStatsInt); //Base stats
 
-            if (AttackTypeBox.SelectedIndex == 1)
-                matchingEnum = matchingEnum.Where(poke => GetPokemonType(poke) == DamageType.Attack);
-            else if (AttackTypeBox.SelectedIndex == 2)
-                matchingEnum = matchingEnum.Where(poke => GetPokemonType(poke) == DamageType.Special);
-            else if (AttackTypeBox.SelectedIndex == 3)
-                matchingEnum = matchingEnum.Where(poke => GetPokemonType(poke) == DamageType.Hybrid);
+            if (HighestEvolStats.IsChecked == false)
+                TotalColumn.Binding = new Binding("PokemonStats.TotalBaseStats");
+            else if (HighestEvolStats.IsChecked == true)
+                TotalColumn.Binding = new Binding("PokemonStats.HighestEvolTBS");
+
+            if (AttackTypeBox.SelectedIndex != 0)
+            {
+                DamageType selectedType;
+
+                if (AttackTypeBox.SelectedIndex == 1) selectedType = DamageType.Attack;
+                else if (AttackTypeBox.SelectedIndex == 2) selectedType = DamageType.Special;
+                else selectedType = DamageType.Hybrid;
+
+                matchingEnum = HighestEvolStats.IsChecked == false
+                    ? matchingEnum.Where(poke => poke.PokemonStats != null && poke.PokemonStats.DamageType == selectedType)
+                    : matchingEnum.Where(poke => poke.PokemonStats != null && poke.PokemonStats.HighestEvolDmgType == selectedType);
+            }
 
             if (ShowPassword.IsChecked == false)
                 matchingEnum = matchingEnum.Where(poke => poke.PokemonExcel != null && !poke.PokemonExcel.Notes.ToLower().Contains("password"));
@@ -153,13 +169,29 @@ namespace Pokemon_Helper
                 matchingEnum = matchingEnum.Where(poke => poke.PokemonExcel != null && !((poke.PokemonExcel.Location == "Grand Hall" && string.IsNullOrEmpty(poke.PokemonExcel.Notes)) || poke.PokemonExcel.Notes == "A")); //Remove Starters
 
             if (TypeCount.SelectedIndex == 1)
-                matchingEnum = matchingEnum.Where(poke => poke.PokemonStats != null && poke.PokemonStats.Types.Count == 1);
+                matchingEnum = matchingEnum.Where(poke => poke.PokemonStats != null && poke.PokemonStats.PokemonTypes.Count == 1);
 
             if (TypeCount.SelectedIndex == 2)
-                matchingEnum = matchingEnum.Where(poke => poke.PokemonStats != null && poke.PokemonStats.Types.Count > 1);
+                matchingEnum = matchingEnum.Where(poke => poke.PokemonStats != null && poke.PokemonStats.PokemonTypes.Count > 1);
 
             if (ShowHidden.IsChecked == false)
                 matchingEnum = matchingEnum.Where(poke => !poke.Hidden);
+
+            if (OnlyCountRelevantStats.IsChecked == true)
+            {
+                if (HighestEvolStats.IsChecked == true)
+                {
+                    TotalColumn.Binding = OnlyCountRelevantStats.IsChecked == true
+                        ? new Binding("PokemonStats.HighestEvolRelevantBaseStats")
+                        : new Binding("PokemonStats.HighestEvolTBS");
+                }
+                else if (HighestEvolStats.IsChecked == false)
+                {
+                    TotalColumn.Binding = OnlyCountRelevantStats.IsChecked == true
+                        ? new Binding("PokemonStats.TotalRelevantBaseStats")
+                        : (BindingBase)new Binding("PokemonStats.TotalBaseStats");
+                }
+            }
 
             string searchTxt = SearchBox.Text.ToLower();
             if (!string.IsNullOrEmpty(searchTxt))
@@ -174,7 +206,7 @@ namespace Pokemon_Helper
 
                     if (poke.PokemonStats == null) continue;
 
-                    List<PokemonType> types = poke.PokemonStats.Types;
+                    List<PokemonType> types = poke.PokemonStats.PokemonTypes;
                     bool matching = includedTypes.Count == 0;
 
                     for (int y = 0; y < types.Count; y++)
@@ -191,7 +223,6 @@ namespace Pokemon_Helper
                         }
                     }
 
-
                     if (!matching)
                         matchingPokemon.Remove(poke);
                 }
@@ -199,6 +230,8 @@ namespace Pokemon_Helper
 
             MatchingPkmnNbr.Content = matchingPokemon.Count;
             pokemonView.PokemonList = matchingPokemon;
+
+            TotalColumn.SortDirection = ListSortDirection.Descending;
         }
 
         private void UpdateMatchingTrainers()
@@ -216,11 +249,13 @@ namespace Pokemon_Helper
         {
             Save save = new(Pokemons);
             save.SavePokemons();
+            Save.SaveSettings(int.Parse(beforeGymCtrl.Text), AttackTypeBox.SelectedIndex, int.Parse(MinimumBaseStats.Text), TrainerList.SelectedIndex);
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ResizeNotesColumn();
+            ResizeTrainerPokemons();
         }
 
         private void ResizeNotesColumn()
@@ -228,6 +263,17 @@ namespace Pokemon_Helper
             var columns = PokemonListView.Columns;
             DataGridColumn noteColumn = columns.First(col => (string)col.Header == "Notes");
             noteColumn.Width = IdealSize();
+        }
+
+        private void ResizeTrainerPokemons()
+        {
+            double alt1 = TrainerListView.ActualWidth - TrainerList.ActualWidth;
+            double alt2 = ActualWidth - PokemonListView.ActualWidth - TrainerList.ActualWidth - InputPanel.ActualWidth;
+
+            if (alt1 > 0)
+                TrainerPokemons.Width = alt1;
+            else if (alt2 > 0)
+                TrainerPokemons.Width = alt2;
         }
 
         private double IdealSize()
@@ -330,16 +376,6 @@ namespace Pokemon_Helper
             ReadExcelAndPbs();
         }
 
-        private void HighestEvolStats_Click(object sender, RoutedEventArgs e)
-        {
-            if (HighestEvolStats.IsChecked == false)
-                TotalColumn.Binding = new Binding("PokemonStats.TotalBaseStats");
-            else if (HighestEvolStats.IsChecked == true)
-                TotalColumn.Binding = new Binding("PokemonStats.HighestEvolTBS");
-
-            UpdateMatchingPokemon();
-        }
-
         private void UpdateMatchingPokemon_Click(object sender, RoutedEventArgs e)
         {
             UpdateMatchingPokemon();
@@ -347,19 +383,24 @@ namespace Pokemon_Helper
 
         private void SearchForTrainers_Click(object sender, RoutedEventArgs e)
         {
-            //TODO handle searching for trainer name
             (oldSearchBoxValue, SearchBox.Text) = (SearchBox.Text, oldSearchBoxValue);
 
             if (SearchForTrainers.IsChecked == true)
             {
                 PokemonListView.Visibility = Visibility.Collapsed;
                 TrainerListView.Visibility = Visibility.Visible;
+
+                ResizeTrainerPokemons();
             }
             else
             {
                 PokemonListView.Visibility = Visibility.Visible;
                 TrainerListView.Visibility = Visibility.Collapsed;
+
+                ResizeNotesColumn();
             }
+
+            UpdateMatchingPokemon();
         }
         #endregion
 
@@ -396,6 +437,17 @@ namespace Pokemon_Helper
             if (selectedPokemon == null)
                 return;
 
+            for (int i = 0; i < Pokemons.Count; i++)
+            {
+                Pokemon pokemon = Pokemons[i];
+
+                if (pokemon.PokemonStats == null)
+                    continue;
+
+                pokemon.PokemonStats.ComparisonPokemon = selectedPokemon;
+                pokemon.PokemonStats.SetRelevantStats();
+            }
+
             ResetTypeSelections();
 
             int physicalMoves = 0;
@@ -417,12 +469,13 @@ namespace Pokemon_Helper
                         physicalMoves++;
                     else
                         specialMoves++;
-                }                    
+                }
 
                 if (!moveTypes.Contains(moveType))
                     moveTypes.Add(moveType);
             }
 
+            //Get which types of pokemon are weak against the trainer pokemons moves and hide them
             Types types = new();
 
             List<TypeEffectiveness> enemyMoveEffectivenesses = types.GetOffensiveMatchups(damageMoveTypes).ToList();
@@ -449,9 +502,10 @@ namespace Pokemon_Helper
                 }
             }
 
+            //Get which types of moves are supereffective against the trainer pokemons types and filter for them
             if (selectedPokemon.PokemonStats != null)
             {
-                List<TypeEffectiveness> enemyWeaknesses = types.GetDefensiveMatchups(selectedPokemon.PokemonStats.Types).Where(eff => eff.Effectiveness > 1).ToList();
+                List<TypeEffectiveness> enemyWeaknesses = types.GetDefensiveMatchups(selectedPokemon.PokemonStats.PokemonTypes).Where(eff => eff.Effectiveness > 1).ToList();
                 for (int i = 0; i < enemyWeaknesses.Count; i++)
                 {
                     TypeEffectiveness selectedEff = enemyWeaknesses[i];
@@ -473,6 +527,19 @@ namespace Pokemon_Helper
                 UpdateMatchingTrainers();
             else
                 UpdateMatchingPokemon();
+        }
+
+        private void HighestEvolStats_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < Pokemons.Count; i++)
+            {
+                Pokemon poke = Pokemons[i];
+
+                if (poke.PokemonStats != null)
+                    poke.PokemonStats.UpdateStats(HighestEvolStats.IsChecked == true);
+            }
+
+            UpdateMatchingPokemon_Click(sender, e);
         }
     }
 }
