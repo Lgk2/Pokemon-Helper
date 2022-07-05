@@ -66,8 +66,6 @@
                 <CheckBox Name="OnlyCurrentTrainers" Foreground="{StaticResource ReadOnlyTextBrush}" Click="OnlyCurrentGym_Click">Only Current Trainers</CheckBox>
                 <CheckBox Name="OnlyCountRelevantStats" Foreground="{StaticResource ReadOnlyTextBrush}" Checked="UpdateMatchingPokemon_Click" IsChecked="True" Click="SearchForTrainers_Click">Only Count Relevant Stats</CheckBox>
 
-
-
                 <CheckBox Name="SearchForTrainers" Foreground="{StaticResource ReadOnlyTextBrush}" Click="SearchForTrainers_Click">Search For Trainers</CheckBox>
                 
                 <Button Name="Reload" Foreground="{StaticResource ReadOnlyTextBrush}" Click="Reload_Click">Reload Resources</Button>
@@ -179,6 +177,7 @@
             <DataGrid.BindingGroup>
                 <BindingGroup/>
             </DataGrid.BindingGroup>
+
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Img" Width="96" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
@@ -191,9 +190,22 @@
                 <DataGridTextColumn Width="170" Header="Types" Binding="{Binding Path=PokemonStats.TypesString}" IsReadOnly="True" />
                 <DataGridTextColumn Width="35" Header="G" Binding="{Binding Path=BeforeGym}" IsReadOnly="True" />
 
-                <DataGridTextColumn Width="240" Header="Location" Binding="{Binding Path=PokemonExcel.Location}" IsReadOnly="True" />
-                <DataGridTextColumn x:Name="NoteColumn" Width="390" Header="Notes" Binding="{Binding Path=PokemonExcel.Notes}" IsReadOnly="True" />
-                <DataGridTextColumn x:Name="TotalColumn" Width="59" Header="Total" SortDirection="Descending" Binding="{Binding Path=PokemonStats.TotalBaseStats}" IsReadOnly="True" />
+                <DataGridTextColumn Width="240" Header="Location" Binding="{Binding Path=PokemonExcel.Location}" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn x:Name="NoteColumn" Width="390" Header="Notes" Binding="{Binding Path=PokemonExcel.Notes}" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                    <DataGridTextColumn x:Name="TotalColumn" Width="59" Header="Total" SortDirection="Descending" Binding="{Binding Path=PokemonStats.TotalBaseStats}" IsReadOnly="True" />
 
                 <DataGridTextColumn Width="50" Header="HP" Binding="{Binding Path=PokemonStats.Health}" IsReadOnly="True" />
                 <DataGridTextColumn Width="50" Header="Atk" Binding="{Binding Path=PokemonStats.Attack}" IsReadOnly="True" />
@@ -205,7 +217,7 @@
         </DataGrid>
 
         <StackPanel Name="TrainerListView" Orientation="Horizontal" Visibility="Collapsed" Grid.Column="1" Grid.RowSpan="2" Margin="4,0,0,0">
-            <DataGrid Name="TrainerList" ItemsSource="{Binding TrainerList}" AutoGenerateColumns="False" FontSize="24" SelectionChanged="TrainerGrid_SelectionChanged" CanUserAddRows="False">
+            <DataGrid Name="TrainerList" ItemsSource="{Binding TrainerList}" AutoGenerateColumns="False" FontSize="24" SelectionChanged="TrainerGrid_SelectionChanged" CanUserAddRows="False" MouseDoubleClick="TrainerList_MouseDoubleClick">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" IsReadOnly="True" />
                 </DataGrid.Columns>
@@ -225,7 +237,13 @@
                     <DataGridTextColumn Width="170" Header="Types" IsReadOnly="True" Binding="{Binding Path=PokemonStats.TypesString}" />
                     <DataGridTextColumn Width="200" Header="Item" IsReadOnly="True" Binding="{Binding Path=Item}" />
                     <DataGridTextColumn Width="80" Header="Dmg Type" IsReadOnly="True" Binding="{Binding Path=PokemonStats.DamageType}" />
-                    <DataGridTextColumn Width="400" Header="Moves" IsReadOnly="True" Binding="{Binding Path=MovesStr}" />
+                    <DataGridTextColumn Width="400" Header="Moves" IsReadOnly="True" Binding="{Binding Path=MovesStr}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Width="105" Header="Nature" IsReadOnly="True" Binding="{Binding Path=Nature}" />
                 </DataGrid.Columns>
             </DataGrid>

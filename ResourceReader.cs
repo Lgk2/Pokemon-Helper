@@ -225,7 +225,7 @@ namespace Pokemon_Helper
                             if (newPokemon.Moves == null)
                                 newPokemon.Moves = new();
 
-                            Move? move = moves.FirstOrDefault(move => move.Name == attribute);
+                            Move? move = moves.FirstOrDefault(move => move.Name.ToUpper() == attribute);
                             if (move != null)
                             {
                                 if (move.MoveType == MoveType.Physical)
@@ -312,7 +312,7 @@ namespace Pokemon_Helper
                     if (stats.Length > 5 && stats[5].ToLower() == "qmarks")
                         continue;
 
-                    newMove.Name = stats[1];
+                    newMove.Name = stats[1][0] + stats[1][1..].ToLower();
                     newMove.Damage = int.Parse(stats[4]);
 
                     newMove.Type = (PokemonType)Enum.Parse(typeof(PokemonType), char.ToUpper(stats[5][0]) + stats[5][1..].ToLower());

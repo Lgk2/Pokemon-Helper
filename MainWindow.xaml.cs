@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using static Pokemon_Helper.Types;
 
@@ -259,6 +260,9 @@ namespace Pokemon_Helper
             if (SearchBox == null)
                 return;
 
+            if (ShowHidden.IsChecked == false)
+                matchingTrainers = matchingTrainers.Where(trainer => !trainer.Hidden);
+
             string searchTxt = SearchBox.Text.ToLower();
             if (!string.IsNullOrEmpty(searchTxt))
                 matchingTrainers = matchingTrainers.Where(trainer => !string.IsNullOrEmpty(trainer.Name) && trainer.Name.ToLower().Contains(searchTxt));
@@ -398,7 +402,7 @@ namespace Pokemon_Helper
             UpdateMatchingPokemon();
         }
 
-        private void PokemonListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void PokemonListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Pokemon poke = (Pokemon)PokemonListView.SelectedItem;
 
@@ -406,7 +410,22 @@ namespace Pokemon_Helper
                 return;
 
             poke.Hidden = !poke.Hidden;
-            UpdateMatchingPokemon();
+
+            if (ShowHidden.IsChecked == false)
+                UpdateMatchingTrainers();
+        }
+
+        private void TrainerList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Trainer trainer = (Trainer)TrainerList.SelectedItem;
+
+            if (trainer == null)
+                return;
+
+            trainer.Hidden = !trainer.Hidden;
+
+            if (ShowHidden.IsChecked == false)
+                UpdateMatchingTrainers();
         }
 
         private void OnlyCurrentGym_Click(object sender, RoutedEventArgs e)
