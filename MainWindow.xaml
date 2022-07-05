@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Closing="Window_Closing"
         SizeChanged="Window_SizeChanged"
-        Title="Pokemon Helper" MinHeight="600" MinWidth="990" Width="1540">
+        Title="Pokemon Helper" MinHeight="650" MinWidth="990" Width="1540">
 
     <Grid>
         <Grid.Resources>
@@ -36,7 +36,7 @@
         <StackPanel Name="InputPanel" Orientation="Vertical">
             <StackPanel Grid.RowSpan="2">
                 <Label Name="GymLabelStr" Foreground="{StaticResource ReadOnlyTextBrush}">Before Gym</Label>
-                <TextBox Name="beforeGymCtrl" Text="5" TextChanged="UpdateMatchingPokemon_Click" />
+                <TextBox Name="beforeGymCtrl" Text="5" TextChanged="UpdateMatchingPokemonAndTrainers" />
 
                 <Label Foreground="{StaticResource ReadOnlyTextBrush}">Attack Type</Label>
                 <ComboBox Name="AttackTypeBox" SelectedIndex="0" Grid.Column="1" SelectionChanged="UpdateMatchingPokemon_Click">
@@ -60,10 +60,14 @@
                 <CheckBox Name="HighestEvolStats" Foreground="{StaticResource ReadOnlyTextBrush}" Click="HighestEvolStats_Click">Highest Evolution Stats</CheckBox>
                 <CheckBox Name="ShowHidden" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Hidden</CheckBox>
                 <CheckBox Name="ShowPassword" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Password</CheckBox>
-                <CheckBox Name="ShowEgg" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Hidden</CheckBox>
+                <CheckBox Name="ShowEgg" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Egg</CheckBox>
                 <CheckBox Name="ShowStarters" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Starters</CheckBox>
-                <CheckBox Name="OnlyCurrentGym" Foreground="{StaticResource ReadOnlyTextBrush}" Click="OnlyCurrentGym_Click">Only Current Gym</CheckBox>
+                <CheckBox Name="OnlyCurrentGym" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Only Current Gym</CheckBox>
+                <CheckBox Name="OnlyCurrentTrainers" Foreground="{StaticResource ReadOnlyTextBrush}" Click="OnlyCurrentGym_Click">Only Current Trainers</CheckBox>
                 <CheckBox Name="OnlyCountRelevantStats" Foreground="{StaticResource ReadOnlyTextBrush}" Checked="UpdateMatchingPokemon_Click" IsChecked="True" Click="SearchForTrainers_Click">Only Count Relevant Stats</CheckBox>
+
+
+
                 <CheckBox Name="SearchForTrainers" Foreground="{StaticResource ReadOnlyTextBrush}" Click="SearchForTrainers_Click">Search For Trainers</CheckBox>
                 
                 <Button Name="Reload" Foreground="{StaticResource ReadOnlyTextBrush}" Click="Reload_Click">Reload Resources</Button>
@@ -220,7 +224,7 @@
                     <DataGridTextColumn Width="100" Header="Lvl" IsReadOnly="True" Binding="{Binding Path=Level}" />
                     <DataGridTextColumn Width="170" Header="Types" IsReadOnly="True" Binding="{Binding Path=PokemonStats.TypesString}" />
                     <DataGridTextColumn Width="200" Header="Item" IsReadOnly="True" Binding="{Binding Path=Item}" />
-                    <DataGridTextColumn Width="100" Header="Dmg Type" IsReadOnly="True" Binding="{Binding Path=PokemonStats.DamageType}" />
+                    <DataGridTextColumn Width="80" Header="Dmg Type" IsReadOnly="True" Binding="{Binding Path=PokemonStats.DamageType}" />
                     <DataGridTextColumn Width="400" Header="Moves" IsReadOnly="True" Binding="{Binding Path=MovesStr}" />
                     <DataGridTextColumn Width="105" Header="Nature" IsReadOnly="True" Binding="{Binding Path=Nature}" />
                 </DataGrid.Columns>

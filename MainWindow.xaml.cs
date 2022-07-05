@@ -38,9 +38,15 @@ namespace Pokemon_Helper
 
         private string oldSearchBoxValue = "";
 
+        //TODO remove hardcoding
+        private readonly int[] levelcaps = new int[] { 20, 25, 35, 40, 45, 50, 55, 60, 65, 70, 70, 75, 75, 80, 85, 90, 90, 95, 150 }; //Hardcoded from Reborn/SystemConstants.rb'
+
+        private readonly CheckBox[] checkBoxes;
+
         public MainWindow()
         {
             InitializeComponent();
+            checkBoxes = new[] { HighestEvolStats, ShowHidden, ShowPassword, ShowEgg, ShowStarters, OnlyCurrentGym, OnlyCurrentTrainers, OnlyCountRelevantStats, SearchForTrainers };
 
             DataContext = pokemonView;
 
@@ -73,7 +79,16 @@ namespace Pokemon_Helper
                     beforeGymCtrl.Text = settings[0];
                     AttackTypeBox.SelectedIndex = int.Parse(settings[1]);
                     MinimumBaseStats.Text = settings[2];
-                    TrainerList.SelectedIndex = int.Parse(settings[3]);
+                    SearchBox.Text = settings[3];
+                    TypeCount.SelectedIndex = int.Parse(settings[4]);
+                    TrainerList.SelectedIndex = int.Parse(settings[5]);
+
+                    if (settings.Length > 7)
+                        for (int i = 0; i < checkBoxes.Length; i++)
+                        {
+                            CheckBox cb = checkBoxes[i];
+                            cb.IsChecked = bool.Parse(settings[6 + i]);
+                        }
                 }
             }
             catch 
@@ -82,6 +97,9 @@ namespace Pokemon_Helper
             }
 
             UpdateMatchingPokemon();
+            UpdateMatchingTrainers();
+
+            SearchForTrainers_Click(this, new RoutedEventArgs());
         }
 
         private void SetStyles()
@@ -238,9 +256,23 @@ namespace Pokemon_Helper
         {
             IEnumerable<Trainer> matchingTrainers = Trainers;
 
+            if (SearchBox == null)
+                return;
+
             string searchTxt = SearchBox.Text.ToLower();
             if (!string.IsNullOrEmpty(searchTxt))
                 matchingTrainers = matchingTrainers.Where(trainer => !string.IsNullOrEmpty(trainer.Name) && trainer.Name.ToLower().Contains(searchTxt));
+
+            if (OnlyCurrentTrainers.IsChecked == true)
+            {
+                int levelCap = levelcaps[int.Parse(beforeGymCtrl.Text)];
+
+                int minLevel = levelCap - 15;
+                int maxLevel = levelCap + 10;
+
+                matchingTrainers = matchingTrainers.Where(trainer => trainer.TrainerPokemons != null && trainer.TrainerPokemons.PokemonList != null &&
+                    trainer.TrainerPokemons.PokemonList.All(poke => poke.Level >= minLevel && poke.Level <= maxLevel));
+            }
 
             pokemonView.TrainerList = matchingTrainers.ToList();
         }
@@ -249,7 +281,20 @@ namespace Pokemon_Helper
         {
             Save save = new(Pokemons);
             save.SavePokemons();
-            Save.SaveSettings(int.Parse(beforeGymCtrl.Text), AttackTypeBox.SelectedIndex, int.Parse(MinimumBaseStats.Text), TrainerList.SelectedIndex);
+
+            List<string> settings = new();
+
+            settings.AddRange(new List<string>() { beforeGymCtrl.Text, AttackTypeBox.SelectedIndex.ToString(), MinimumBaseStats.Text, SearchBox.Text, TypeCount.SelectedIndex.ToString(), TrainerList.SelectedIndex.ToString() });
+
+            if (checkBoxes.All(box => box.IsChecked != null))
+                for (int i = 0; i < checkBoxes.Length; i++)
+                {
+                    #pragma warning disable CS8604 // Possible null reference argument.
+                    settings.Add(checkBoxes[i].IsChecked.ToString());
+                    #pragma warning restore CS8604 // Possible null reference argument.
+                }
+
+            Save.SaveSettings(settings);
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -368,6 +413,7 @@ namespace Pokemon_Helper
         {
             GymLabelStr.Content = OnlyCurrentGym.IsChecked == true ? "Gym" : "Before Gym";
             UpdateMatchingPokemon();
+            UpdateMatchingTrainers();
         }
 
         private void Reload_Click(object sender, RoutedEventArgs e)
@@ -376,7 +422,18 @@ namespace Pokemon_Helper
             ReadExcelAndPbs();
         }
 
+        private void UpdateMatchingPokemonAndTrainers(object sender, RoutedEventArgs e)
+        {
+            UpdateMatchingPokemon();
+            UpdateMatchingTrainers();
+        }
+
         private void UpdateMatchingPokemon_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateMatchingPokemon();
+        }
+
+        private void UpdateMatchingTrainers_Click(object sender, RoutedEventArgs e)
         {
             UpdateMatchingPokemon();
         }

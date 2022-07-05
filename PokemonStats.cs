@@ -151,12 +151,12 @@ namespace Pokemon_Helper
                 if (ComparisonPokemon.Moves == null)
                     return;
 
-                if (ComparisonPokemon.Moves.All(move => move.MoveType is MoveType.Physical or MoveType.Status))
+                if (ComparisonPokemon.PokemonStats.DamageType == Types.DamageType.Attack)
                 {
                     TotalRelevantBaseStats -= StatNbrs[5];
                     HighestEvolRelevantBaseStats -= HighestEvolStatNbrs[5];
                 }
-                else if (ComparisonPokemon.Moves.All(move => move.MoveType is MoveType.Special or MoveType.Status))
+                else if (ComparisonPokemon.PokemonStats.DamageType == Types.DamageType.Special)
                 {
                     TotalRelevantBaseStats -= StatNbrs[2];
                     HighestEvolRelevantBaseStats -= HighestEvolStatNbrs[2];

@@ -6,6 +6,7 @@
     <RootNamespace>Pokemon_Helper</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>charmander.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -918,6 +919,10 @@
     <None Remove="Resources\Pokemon Availability.xlsx" />
     <None Remove="Resources\pokemon.txt" />
     <None Remove="Resources\trainers.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="charmander.ico" />
   </ItemGroup>
 
   <ItemGroup>

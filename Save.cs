@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 
 namespace Pokemon_Helper
@@ -87,14 +88,29 @@ namespace Pokemon_Helper
             return pokemons;
         }
 
-        public static void SaveSettings(int beforeGym, int attackTypeBoxIndex, int minBaseStats, int selectedTrainerIndex)
+        public static void SaveSettings(List<string> settings)
         {
-            File.WriteAllText(ProgressFile, beforeGym + " " + attackTypeBoxIndex + " " + minBaseStats + " " + selectedTrainerIndex);
+            File.WriteAllText(ProgressFile, SettingsString('\n', settings));
+        }
+
+        public static string SettingsString(char separator, List<string> strings)
+        {
+            StringBuilder builder = new();
+
+            for (int i = 0; i < strings.Count; i++)
+            {
+                if (i <= strings.Count - 1)
+                    builder.Append(strings[i] + separator);
+                else
+                    builder.Append(strings[i]);
+            }
+
+            return builder.ToString();
         }
 
         public static string[] LoadSettings()
         {
-            return !File.Exists(ProgressFile) ? Array.Empty<string>() : File.ReadAllText(ProgressFile).Split(" ");
+            return !File.Exists(ProgressFile) ? Array.Empty<string>() : File.ReadAllText(ProgressFile).Split('\n');
         }
     }
 }
