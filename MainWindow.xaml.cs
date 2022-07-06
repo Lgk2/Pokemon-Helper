@@ -267,9 +267,11 @@ namespace Pokemon_Helper
             if (!string.IsNullOrEmpty(searchTxt))
                 matchingTrainers = matchingTrainers.Where(trainer => !string.IsNullOrEmpty(trainer.Name) && trainer.Name.ToLower().Contains(searchTxt));
 
-            if (OnlyCurrentTrainers.IsChecked == true)
+            if (OnlyCurrentTrainers.IsChecked == true && int.TryParse(beforeGymCtrl.Text, out int parsedBeforeGym))
             {
-                int levelCap = levelcaps[int.Parse(beforeGymCtrl.Text)];
+                int beforeGymClamped = Math.Clamp(parsedBeforeGym, 0, levelcaps.Length - 1);
+
+                int levelCap = levelcaps[beforeGymClamped];
 
                 int minLevel = levelCap - 15;
                 int maxLevel = levelCap + 10;
