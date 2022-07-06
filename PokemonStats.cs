@@ -34,13 +34,13 @@ namespace Pokemon_Helper
 
         public string TypesString { get; set; } = "";
 
-        private Pokemon? comparisonPokemon;
+        private TrainerPokemon? comparisonPokemon;
 
         public DamageType? DamageType { get; private set; }
         public DamageType? HighestEvolDmgType { get; private set; }
 
         [JsonIgnore]
-        public Pokemon? ComparisonPokemon
+        public TrainerPokemon? ComparisonPokemon
         {
             get { return comparisonPokemon; }
             set

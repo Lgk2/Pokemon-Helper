@@ -186,9 +186,8 @@ namespace Pokemon_Helper
 
                 else if (lineNbr >= 4 && lineNbr != 4 + pokemons)
                 {
-                    Pokemon newPokemon = new()
+                    TrainerPokemon newPokemon = new()
                     {
-                        PokemonExcel = new(),
                         PokemonStats = new()
                     };
 
@@ -207,12 +206,24 @@ namespace Pokemon_Helper
                         if (i == 0)
                         {
                             List<Pokemon> pokes = pokemonList.Where(poke => poke.PokemonStats != null && !string.IsNullOrEmpty(poke.PokemonStats.InternalName)).ToList();
-                            Pokemon? foundPokemon = pokes.FirstOrDefault(poke => poke.PokemonStats.InternalName == attribute);
+                            Pokemon? foundPokemon = pokes.FirstOrDefault(poke => poke.PokemonStats != null && poke.PokemonStats.InternalName == attribute);
 
-                            if (foundPokemon != null)
-                                newPokemon.PokemonStats = foundPokemon.PokemonStats;
+                            if (foundPokemon != null && foundPokemon.PokemonStats != null)
+                            {
+                                PokemonStats? foundPokemonStats = foundPokemon.PokemonStats;
+
+                                if (foundPokemonStats != null)
+                                {
+                                    newPokemon.PokemonStats.Name = foundPokemonStats.Name;
+                                    newPokemon.PokemonStats.Image = foundPokemonStats.Image;
+
+                                    newPokemon.PokemonStats.SetStatNbrs(foundPokemonStats.StatNbrs);
+
+                                    for (int y = 0; y < foundPokemonStats.PokemonTypes.Count; y++)
+                                        newPokemon.PokemonStats.PokemonTypes.Add(foundPokemonStats.PokemonTypes[y]);
+                                }
+                            }
                         }
-
 
                         else if (i == 1)
                             newPokemon.Level = int.Parse(attribute);
@@ -266,15 +277,9 @@ namespace Pokemon_Helper
                     }
 
                     if (newTrainer.TrainerPokemons == null)
-                    {
-                        newTrainer.TrainerPokemons = new()
-                        {
-                            PokemonList = new()
-                        };
-                    }
+                        newTrainer.TrainerPokemons = new();
 
-                    if (newTrainer.TrainerPokemons.PokemonList != null)
-                        newTrainer.TrainerPokemons.PokemonList.Add(newPokemon);
+                    newTrainer.TrainerPokemons.Add(newPokemon);
                 }
 
                 if (lineNbr == 3 + pokemons)

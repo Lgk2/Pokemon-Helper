@@ -223,7 +223,7 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <DataGrid Name="TrainerPokemons" ItemsSource="{Binding SelectedTrainer.TrainerPokemons.PokemonList}" MinWidth="100" AutoGenerateColumns="False" FontSize="24" SelectionChanged="TrainerPokemon_SelectionChanged" CanUserAddRows="False">
+            <DataGrid Name="TrainerPokemons" ItemsSource="{Binding SelectedTrainer.TrainerPokemons}" MinWidth="100" AutoGenerateColumns="False" FontSize="24" SelectionChanged="TrainerPokemon_SelectionChanged" CanUserAddRows="False">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Img" Width="96" IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>

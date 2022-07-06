@@ -1,8 +1,10 @@
-﻿namespace Pokemon_Helper
+﻿using System.Collections.Generic;
+
+namespace Pokemon_Helper
 {
     public class Trainer
     {
-        public PokemonView? TrainerPokemons { get; set; }
+        public List<TrainerPokemon>? TrainerPokemons { get; set; }
         public string? Name { get; set; }
         public bool Hidden { get; set; } = false;
     }

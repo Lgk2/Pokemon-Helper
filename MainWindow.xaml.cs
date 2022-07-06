@@ -140,6 +140,7 @@ namespace Pokemon_Helper
         {
             ResourceReader resourceReader = new();
             Trainers = resourceReader.ReadTrainers(Pokemons);
+
             UpdateMatchingTrainers();
         }
 
@@ -276,8 +277,8 @@ namespace Pokemon_Helper
                 int minLevel = levelCap - 15;
                 int maxLevel = levelCap + 10;
 
-                matchingTrainers = matchingTrainers.Where(trainer => trainer.TrainerPokemons != null && trainer.TrainerPokemons.PokemonList != null &&
-                    trainer.TrainerPokemons.PokemonList.All(poke => poke.Level >= minLevel && poke.Level <= maxLevel));
+                matchingTrainers = matchingTrainers.Where(trainer => trainer.TrainerPokemons != null &&
+                    trainer.TrainerPokemons.All(poke => poke.Level >= minLevel && poke.Level <= maxLevel));
             }
 
             pokemonView.TrainerList = matchingTrainers.ToList();
@@ -510,7 +511,7 @@ namespace Pokemon_Helper
 
         private void TrainerPokemon_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Pokemon selectedPokemon = (Pokemon)((DataGrid)sender).SelectedItem;
+            TrainerPokemon selectedPokemon = (TrainerPokemon)((DataGrid)sender).SelectedItem;
 
             if (selectedPokemon == null)
                 return;
@@ -593,10 +594,6 @@ namespace Pokemon_Helper
                         ClickedBtn(typeStr, true, selectedEff.Effectiveness == 2 ? TwoXEffectiveness : FourXEffectiveness);
                 }
             }
-            else if (selectedPokemon.PokemonExcel != null)
-                MessageBox.Show("Error finding " + selectedPokemon.PokemonExcel.Name);
-            else
-                MessageBox.Show("Error finding " + selectedPokemon.ToString());
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
