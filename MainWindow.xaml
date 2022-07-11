@@ -236,8 +236,9 @@
                     <DataGridTextColumn Width="100" Header="Lvl" IsReadOnly="True" Binding="{Binding Path=Level}" />
                     <DataGridTextColumn Width="170" Header="Types" IsReadOnly="True" Binding="{Binding Path=PokemonStats.TypesString}" />
                     <DataGridTextColumn Width="200" Header="Item" IsReadOnly="True" Binding="{Binding Path=Item}" />
+                    <DataGridTextColumn Width="200" Header="Ability" IsReadOnly="True" Binding="{Binding Path=Ability}" />
                     <DataGridTextColumn Width="80" Header="Dmg Type" IsReadOnly="True" Binding="{Binding Path=PokemonStats.DamageType}" />
-                    <DataGridTextColumn Width="400" Header="Moves" IsReadOnly="True" Binding="{Binding Path=MovesStr}">
+                    <DataGridTextColumn Width="300" Header="Moves" IsReadOnly="True" Binding="{Binding Path=MovesStr}">
                         <DataGridTextColumn.ElementStyle>
                             <Style>
                                 <Setter Property="TextBlock.TextWrapping" Value="Wrap" />

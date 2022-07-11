@@ -37,7 +37,8 @@ namespace Pokemon_Helper
         private readonly SolidColorBrush FourXResistant = new(Color.FromRgb(0, 0, 192)); //Only takes half damage
         private readonly SolidColorBrush Immune = new(Color.FromRgb(255, 255, 255));
 
-        private string oldSearchBoxValue = "";
+        private string pokemonSearchTxt = "";
+        private string trainerSearchTxt = "";
 
         //TODO remove hardcoding
         private readonly int[] levelcaps = new int[] { 20, 25, 35, 40, 45, 50, 55, 60, 65, 70, 70, 75, 75, 80, 85, 90, 90, 95, 150 }; //Hardcoded from Reborn/SystemConstants.rb'
@@ -80,19 +81,20 @@ namespace Pokemon_Helper
                     beforeGymCtrl.Text = settings[0];
                     AttackTypeBox.SelectedIndex = int.Parse(settings[1]);
                     MinimumBaseStats.Text = settings[2];
-                    SearchBox.Text = settings[3];
-                    TypeCount.SelectedIndex = int.Parse(settings[4]);
-                    TrainerList.SelectedIndex = int.Parse(settings[5]);
+                    pokemonSearchTxt = settings[3];
+                    trainerSearchTxt = settings[4];
+                    TypeCount.SelectedIndex = int.Parse(settings[5]);
+                    TrainerList.SelectedIndex = int.Parse(settings[6]);
 
-                    if (settings.Length > 7)
+                    if (settings.Length > 8)
                         for (int i = 0; i < checkBoxes.Length; i++)
                         {
                             CheckBox cb = checkBoxes[i];
-                            cb.IsChecked = bool.Parse(settings[6 + i]);
+                            cb.IsChecked = bool.Parse(settings[7 + i]);
                         }
                 }
             }
-            catch 
+            catch
             {
                 MessageBox.Show("Failed to load your settings, hopefully it works next time!");
             }
@@ -217,6 +219,19 @@ namespace Pokemon_Helper
             if (!string.IsNullOrEmpty(searchTxt))
                 matchingEnum = matchingEnum.Where(poke => poke.PokemonExcel != null && poke.PokemonExcel.Name.ToLower().Contains(searchTxt));
 
+            //TODO take into account the following:
+            //Dry Skin -fire moves do more damage, makes water type moves heal it
+
+            //Flash Fire -raises the power of fire type moves when hit by a fire type move
+            //Heat Proof - lowers damage taken by fire type moves
+            //Levitate - immune to Ground type moves
+            //Motor Drive -raises speed when hit by electric move
+            //Scrappy - makes normal and fighting type moves hit ghost types
+            //Difficult to implement, need sound bool: Sound Proof -makes sound related move not do anything
+            //Thick Fat - weakens fire and ice type moves
+            //Volt Absorb - heals when hit by electric move
+            //Water Absorb - heal when hit by water move
+
             List<Pokemon> matchingPokemon = matchingEnum.Any() ? matchingEnum.ToList() : (new());
             if (includedTypes.Count > 0 || excludedTypes.Count > 0)
             {
@@ -291,14 +306,14 @@ namespace Pokemon_Helper
 
             List<string> settings = new();
 
-            settings.AddRange(new List<string>() { beforeGymCtrl.Text, AttackTypeBox.SelectedIndex.ToString(), MinimumBaseStats.Text, SearchBox.Text, TypeCount.SelectedIndex.ToString(), TrainerList.SelectedIndex.ToString() });
+            settings.AddRange(new List<string>() { beforeGymCtrl.Text, AttackTypeBox.SelectedIndex.ToString(), MinimumBaseStats.Text, pokemonSearchTxt, trainerSearchTxt, TypeCount.SelectedIndex.ToString(), TrainerList.SelectedIndex.ToString() });
 
             if (checkBoxes.All(box => box.IsChecked != null))
                 for (int i = 0; i < checkBoxes.Length; i++)
                 {
-                    #pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8604 // Possible null reference argument.
                     settings.Add(checkBoxes[i].IsChecked.ToString());
-                    #pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8604 // Possible null reference argument.
                 }
 
             Save.SaveSettings(settings);
@@ -462,12 +477,12 @@ namespace Pokemon_Helper
 
         private void SearchForTrainers_Click(object sender, RoutedEventArgs e)
         {
-            (oldSearchBoxValue, SearchBox.Text) = (SearchBox.Text, oldSearchBoxValue);
-
             if (SearchForTrainers.IsChecked == true)
             {
                 PokemonListView.Visibility = Visibility.Collapsed;
                 TrainerListView.Visibility = Visibility.Visible;
+
+                SearchBox.Text = trainerSearchTxt;
 
                 ResizeTrainerPokemons();
             }
@@ -475,6 +490,8 @@ namespace Pokemon_Helper
             {
                 PokemonListView.Visibility = Visibility.Visible;
                 TrainerListView.Visibility = Visibility.Collapsed;
+
+                SearchBox.Text = pokemonSearchTxt;
 
                 ResizeNotesColumn();
             }
@@ -599,9 +616,15 @@ namespace Pokemon_Helper
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (SearchForTrainers.IsChecked == true)
+            {
+                trainerSearchTxt = SearchBox.Text;
                 UpdateMatchingTrainers();
+            }   
             else
+            {
+                pokemonSearchTxt = SearchBox.Text;
                 UpdateMatchingPokemon();
+            }
         }
 
         private void HighestEvolStats_Click(object sender, RoutedEventArgs e)

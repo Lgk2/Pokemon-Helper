@@ -105,7 +105,7 @@ namespace Pokemon_Helper
                     pokemonStats.InternalName = value;
 
 
-                if (line.Contains("Type") || line.Contains("BaseStats") || line.Contains("Evolutions"))
+                if (line.Contains("Type") || line.Contains("BaseStats") || line.Contains("Abilities") || line.Contains("HiddenAbility") || line.Contains("Evolutions"))
                 {
                     if (line.Contains("Type"))
                     {
@@ -129,6 +129,13 @@ namespace Pokemon_Helper
                         int[] res = Array.ConvertAll(value.Split(","), s => int.Parse(s));
                         pokemonStats.SetStatNbrs(res);
                     }
+                    else if (line.Contains("Abilities") || line.Contains("HiddenAbility"))
+                    {
+                        string[] abilities = value.Split(",");
+
+                        for (int i = 0; i < abilities.Length; i++)
+                            pokemonStats.AddAbility(abilities[i]);
+                    }
                     else if (line.Contains("Evolutions"))
                     {
                         value = value.Replace("Level", "");
@@ -149,7 +156,6 @@ namespace Pokemon_Helper
                                 pokemonStats.Evolutions.Add(evo);
                         }
                     }
-
                 }
 
                 nextIsName = false;
@@ -236,7 +242,7 @@ namespace Pokemon_Helper
                             if (newPokemon.Moves == null)
                                 newPokemon.Moves = new();
 
-                            Move? move = moves.FirstOrDefault(move => move.Name.ToUpper() == attribute);
+                            Move? move = moves.FirstOrDefault(move => move.Name != null && move.Name.ToUpper() == attribute);
                             if (move != null)
                             {
                                 if (move.MoveType == MoveType.Physical)
@@ -249,8 +255,25 @@ namespace Pokemon_Helper
                         }
 
                         //TODO finish this
-                        //if (i == 7)
-                        //    newPokemon.Ability = (Ability)Enum.Parse(typeof(Ability), attribute);
+                        if (i == 7)
+                        {
+                            List<Pokemon> pokes = pokemonList.Where(poke => poke.PokemonStats != null && !string.IsNullOrEmpty(poke.PokemonStats.InternalName)).ToList();
+                            Pokemon? foundPokemon = pokes.FirstOrDefault(poke => poke.PokemonStats != null && poke.PokemonStats.Name == newPokemon.PokemonStats.Name);
+
+                            if (foundPokemon == null)
+                                continue;
+
+                            PokemonStats? foundPokeStats = foundPokemon.PokemonStats;
+                            if (foundPokeStats != null && foundPokeStats.Abilities != null)
+                            {
+                                int abilityIndex = int.Parse(attribute);
+
+                                if (abilityIndex >= foundPokeStats.Abilities.Count)
+                                    Console.Error.WriteLine("Abilityindex of pokemon " + newPokemon.PokemonStats.Name + " is outside of index!");
+                                
+                                newPokemon.Ability = foundPokeStats.Abilities[Math.Min(abilityIndex, foundPokeStats.Abilities.Count - 1)];
+                            }
+                        }
 
                         //Gender
 

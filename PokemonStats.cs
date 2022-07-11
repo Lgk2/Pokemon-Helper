@@ -13,6 +13,9 @@ namespace Pokemon_Helper
 
         public List<PokemonType> PokemonTypes { get; set; } = new();
         public List<Move> Moves { get; set; } = new();
+
+        public List<string> Abilities { get; set; } = new();
+
         public List<string> Evolutions { get; set; } = new();
 
         public int TotalBaseStats { get; set; }
@@ -147,7 +150,6 @@ namespace Pokemon_Helper
                     HighestEvolRelevantBaseStats -= unnecessarySpeed;
                 }
 
-                //TODO if comparisonpokemon moves
                 if (ComparisonPokemon.Moves == null)
                     return;
 
@@ -161,6 +163,8 @@ namespace Pokemon_Helper
                     TotalRelevantBaseStats -= StatNbrs[2];
                     HighestEvolRelevantBaseStats -= HighestEvolStatNbrs[2];
                 }
+
+                //TODO take account into comparisonpokemon tank stats, for example don't recommend a special attacker against blissey
             }
 
             if (DamageType.HasValue)
@@ -182,6 +186,11 @@ namespace Pokemon_Helper
                 else
                     HighestEvolRelevantBaseStats -= (StatNbrs[1] + StatNbrs[4]) / 2;
             }
+        }
+
+        public void AddAbility(string ability)
+        {
+            Abilities.Add(char.ToUpper(ability[0]) + ability[1..].ToLower());
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Pokemon_Helper
 
         public int Level { get; set; }
         public string? Item { get; set; }
+        public string? Ability { get; set; }
 
         public List<Move>? Moves { get; set; }
         public string? MovesStr { get; private set; }
