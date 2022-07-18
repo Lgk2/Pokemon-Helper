@@ -457,6 +457,7 @@ namespace Pokemon_Helper
         {
             Pokemons = new();
             ReadExcelAndPbs();
+            MessageBox.Show("Finished Reloading!");
         }
 
         private void UpdateMatchingPokemonAndTrainers(object sender, RoutedEventArgs e)

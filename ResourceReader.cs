@@ -360,12 +360,21 @@ namespace Pokemon_Helper
             pokemonName = pokemonName.Replace("'", "");
             pokemonName = pokemonName.Replace(" ", "");
             pokemonName = pokemonName.Replace(".", "");
+            pokemonName = pokemonName.Replace(":", "-");
 
-            //Handle these
-            //MrMime
-            //MimeJr
-            //Type:Null
-            //TapuKoko
+            for (int i = 1; i < pokemonName.Length; i++)
+            {
+                char c = pokemonName[i];
+
+                if (char.IsUpper(c))
+                {
+                    bool nextCharIsDash = i < pokemonName.Length - 1 && (pokemonName[i + 1] == '-');
+                    bool lastCharWasDash = pokemonName[i - 1] == '-';
+
+                    if (!nextCharIsDash && !lastCharWasDash)
+                        pokemonName = pokemonName.Insert(i, "-");
+                }
+            }
 
             string? resourceName = resourceNames.FirstOrDefault(name => name.Contains(pokemonName.ToLower()) && name.EndsWith(".png"));
 
