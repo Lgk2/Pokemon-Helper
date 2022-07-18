@@ -17,11 +17,6 @@ namespace Pokemon_Helper
 
         public NatureType Nature { get; set; }
 
-        public void SetPokemonStats(PokemonStats pokemonStats)
-        {
-            PokemonStats = pokemonStats;
-        }
-
         public void AddMove(Move newMove)
         {
             if (Moves == null)

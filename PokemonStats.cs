@@ -35,7 +35,11 @@ namespace Pokemon_Helper
         public int[] StatNbrs { get; set; } = new int[] { 0, 0, 0, 0, 0 };
         public int[] HighestEvolStatNbrs { get; set; } = new int[] { 0, 0, 0, 0, 0 };
 
-        public string TypesString { get; set; } = "";
+        public string TypesString { get
+            {
+                return string.Join(' ', PokemonTypes);
+            }
+        }
 
         private TrainerPokemon? comparisonPokemon;
 
@@ -51,17 +55,6 @@ namespace Pokemon_Helper
                 comparisonPokemon = value;
                 SetRelevantStats();
             }
-        }
-
-
-        public void AddType(PokemonType type)
-        {
-            PokemonTypes.Add(type);
-
-            if (TypesString != "")
-                TypesString += " ";
-
-            TypesString += type.ToString();
         }
 
         public void SetStatNbrs(int[] statNbrs)

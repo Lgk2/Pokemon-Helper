@@ -120,7 +120,7 @@ namespace Pokemon_Helper
                         typeStr = char.ToUpper(typeStr[0]) + typeStr[1..];
 
                         if (Enum.TryParse(typeStr, out PokemonType type) && !pokemonStats.PokemonTypes.Contains(type))
-                            pokemonStats.AddType(type);
+                            pokemonStats.PokemonTypes.Add(type);
                         else
                             Console.WriteLine("Error reading type from " + line);
                     }
