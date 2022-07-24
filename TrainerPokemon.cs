@@ -41,7 +41,17 @@ namespace Pokemon_Helper
                 moveNames[i] = res.ToString();
             }
 
-            MovesStr = string.Join(' ', moveNames);
+            StringBuilder movesStrBuilder = new(Moves[0].Name + " ");
+
+            for (int i = 1; i < Moves.Count; i++)
+            {
+                if (i != 1)
+                    movesStrBuilder.Append(Moves[i].Name + " ");
+                else
+                    movesStrBuilder.AppendLine(Moves[i].Name);
+            }
+
+            MovesStr = movesStrBuilder.ToString();
         }
     }
 }
