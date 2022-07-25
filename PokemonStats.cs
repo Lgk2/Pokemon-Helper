@@ -37,7 +37,7 @@ namespace Pokemon_Helper
 
         public string TypesString { get
             {
-                return string.Join(' ', PokemonTypes);
+                return string.Join('\n', PokemonTypes);
             }
         }
 

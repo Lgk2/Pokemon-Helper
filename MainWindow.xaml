@@ -57,6 +57,7 @@
                     <ComboBoxItem>Single</ComboBoxItem>
                     <ComboBoxItem>Double</ComboBoxItem>
                 </ComboBox>
+                
                 <CheckBox Name="HighestEvolStats" Foreground="{StaticResource ReadOnlyTextBrush}" Click="HighestEvolStats_Click">Highest Evolution Stats</CheckBox>
                 <CheckBox Name="ShowHidden" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Hidden</CheckBox>
                 <CheckBox Name="ShowPassword" Foreground="{StaticResource ReadOnlyTextBrush}" Click="UpdateMatchingPokemon_Click">Show Password</CheckBox>
@@ -234,7 +235,7 @@
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Width="140" Header="Name" IsReadOnly="True" Binding="{Binding Path=PokemonStats.Name}" />
                     <DataGridTextColumn Width="100" Header="Lvl" IsReadOnly="True" Binding="{Binding Path=Level}" />
-                    <DataGridTextColumn Width="170" Header="Types" IsReadOnly="True" Binding="{Binding Path=PokemonStats.TypesString}" />
+                    <DataGridTextColumn Width="100" Header="Types" IsReadOnly="True" Binding="{Binding Path=PokemonStats.TypesString}" />
                     <DataGridTextColumn Width="200" Header="Item" IsReadOnly="True" Binding="{Binding Path=Item}" />
                     <DataGridTextColumn Width="200" Header="Ability" IsReadOnly="True" Binding="{Binding Path=Ability}" />
                     <DataGridTextColumn Width="80" Header="Dmg Type" IsReadOnly="True" Binding="{Binding Path=PokemonStats.DamageType}" />
